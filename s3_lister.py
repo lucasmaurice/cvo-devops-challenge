@@ -19,22 +19,26 @@ def get_bucket(name):
 
     last_modified = datetime.min
     last_modified = last_modified.replace(tzinfo=tzutc())
-    c = 0
+    bucket_object_count = 0
     bucket_size = 0
 
-    objects = client.list_objects_v2(Bucket=bucket.name)
-    if not (contents := objects.get("Contents")):
+    paginator = client.get_paginator('list_objects_v2')
+    for objects in paginator.paginate(Bucket=bucket.name):
+        if not (contents := objects.get("Contents")):
+            continue
+        for bucket_object in contents:
+            if (new_last_modified := bucket_object["LastModified"]) > last_modified:
+                last_modified = new_last_modified
+            bucket_object_count += 1
+            bucket_size += bucket_object["Size"]
+
+    if bucket_object_count == 0:
         return None
-    for bucket_object in contents:
-        if (new_last_modified := bucket_object["LastModified"]) > last_modified:
-            last_modified = new_last_modified
-        c += 1
-        bucket_size += bucket_object["Size"]
 
     return dict(
         name=name,
         creation_date=bucket.creation_date,
-        nb_files=c,
+        nb_files=bucket_object_count,
         total_size_bytes=bucket_size,
         last_modified=last_modified,
         cost=round(COST_PER_BYTE * bucket_size, 2),
