@@ -5,6 +5,10 @@ from dateutil.tz import tzutc
 from mypy_boto3_s3 import S3Client
 
 
+COST_PER_GB = 0.023
+COST_PER_BYTE = COST_PER_GB / 1024 / 1024 / 1024
+
+
 def get_bucket(name):
     print(f"Getting bucket with name {name}")
 
@@ -17,7 +21,6 @@ def get_bucket(name):
     last_modified = last_modified.replace(tzinfo=tzutc())
     c = 0
     bucket_size = 0
-    cost = 0
 
     objects = client.list_objects_v2(Bucket=bucket.name)
     if not (contents := objects.get("Contents")):
@@ -27,7 +30,6 @@ def get_bucket(name):
             last_modified = new_last_modified
         c += 1
         bucket_size += bucket_object["Size"]
-        cost += round(0.023 * bucket_size / 1024 / 1024 / 1024, 2)
 
     return dict(
         name=name,
@@ -35,7 +37,7 @@ def get_bucket(name):
         nb_files=c,
         total_size_bytes=bucket_size,
         last_modified=last_modified,
-        cost=cost,
+        cost=round(COST_PER_BYTE * bucket_size, 2),
     )
 
 
