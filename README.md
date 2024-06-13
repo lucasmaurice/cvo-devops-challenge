@@ -35,6 +35,9 @@ familiar with AWS. It's normal and we don't expect you to learn everything befor
 4. Run `poetry install`
 5. Run `poetry run python ./main.py`
 
+> **Note**: If you need to be able to see the virtual environment created by Poetry in vscode, you can have the venv in the project folder by running `poetry config virtualenvs.in-project true` before running `poetry install`.
+> Don't forget to add the `.venv` folder to your `.gitignore` file.
+
 ## During the technical interview
 
 Be prepared for the pairs review during your technical interview. Also expect some additional challenges as we may ask you
