@@ -2,7 +2,7 @@ import boto3
 from random import randint
 import sys
 
-BUCKET_COUNT = 10
+BUCKET_COUNT = 20
 BUCKET_NAME_PREFIX = "djls-cvo-"
 MIN_FILES = 1000
 MAX_FILES = 10000
@@ -22,7 +22,14 @@ def create_data(prefix: str, refill: bool = False):
             continue
 
         print(f"Creating bucket {bucket_name}")
-        bucket = s3.create_bucket(Bucket=bucket_name)
+        if i < 10:
+            bucket = s3.create_bucket(Bucket=bucket_name)
+        elif i < 12:
+            bucket = s3.create_bucket(Bucket=bucket_name, CreateBucketConfiguration={'LocationConstraint': 'eu-west-1'})
+        elif i < 14:
+            bucket = s3.create_bucket(Bucket=bucket_name, CreateBucketConfiguration={'LocationConstraint': 'us-east-2'})
+        else:
+            bucket = s3.create_bucket(Bucket=bucket_name, CreateBucketConfiguration={'LocationConstraint': 'us-west-2'})
 
         object_to_put = randint(MIN_FILES, MAX_FILES)
         print(f"Putting {object_to_put} objects in bucket {bucket_name}")
