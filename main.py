@@ -7,9 +7,22 @@ from tabulate import tabulate
 from s3_lister import get_bucket, list_buckets, available_grouping
 
 
+UNITS = ["auto", "B", "KiB", "MiB", "GiB", "TiB"]
+selected_unit = "auto"
+
+
+# Callback to set the unit to use for the data display
+def set_unit(value):
+    if value not in UNITS:
+        raise ValueError(f"Invalid unit selected '{value}'. Must be one of {UNITS}")
+
+    global selected_unit
+    selected_unit = value
+
+
 def beautify_size(size):
     for unit in ["B", "KiB", "MiB", "GiB", "TiB"]:
-        if size < 1024.0:
+        if (selected_unit == unit) or (size < 1024.0 and selected_unit == "auto"):
             break
         size /= 1024.0
     return f"{size:.2f} {unit}"
@@ -33,7 +46,8 @@ def print_bucket_table(bucket_information):
 
 def main(
     bucket: Annotated[str, typer.Option(help="The bucket name to filter. Should be the entire bucket name.")] = "",
-    group_by: Annotated[Optional[str], typer.Option(help="this option does this and that", callback=available_grouping)] = "",
+    group_by: Annotated[str, typer.Option(help="The grouping you want to use for display the buckets.", callback=available_grouping)] = "",
+    data_unit: Annotated[str, typer.Option(help="The unit to use for the data. {UNITS}", callback=set_unit)] = "auto",
 ):
     if bucket:
         if bucket_information := get_bucket(bucket):
