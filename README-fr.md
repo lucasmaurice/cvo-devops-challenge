@@ -33,7 +33,7 @@ avant l'entretien.
 
 1. Vous devez d'abord créer un compte AWS. Un peut être créé gratuitement.
 2. Créez un compartiment S3 et chargez-y des fichiers. Gardez à l'esprit qu'il peut y avoir des frais si vous dépassez le
-[exigences du niveau gratuit](https://aws.amazon.com/free/?all-free-tier.sort-by=item.additionalFields.SortRank&all-free-tier.sort-order=asc&awsf.Free%20Tier%20Types =*all&awsf.Free%20Tier%20Categories=*all&all-free-tier.q=S3&all-free-tier.q_operator=AND)
+[exigences du niveau gratuit](https://aws.amazon.com/free/?all-free-tier.sort-by=item.additionalFields.SortRank&all-free-tier.sort-order=asc&awsf.Free%20Tier%20Types=*all&awsf.Free%20Tier%20Categories=*all&all-free-tier.q=S3&all-free-tier.q_operator=AND)
 (5 Go au moment de la rédaction).
 3. Pour exécuter le projet lui-même, vous aurez besoin de Python 3.8 ou plus récent et de [Poetry](https://python-poetry.org/docs/#installation)
 4. Lancez `poetry install`

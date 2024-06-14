@@ -1,0 +1,9 @@
+{
+  "editor.formatOnSave": true,
+  "editor.inlineSuggest.enabled": true,
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.autopep8",
+    "editor.tabSize": 4
+  },
+  "autopep8.args": ["--indent-size=4", "--max-line-length=250"],
+}
