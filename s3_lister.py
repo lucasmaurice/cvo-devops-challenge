@@ -48,12 +48,12 @@ def get_bucket(name):
 
     return dict(
         name=name,
-        creation_date=bucket.creation_date,
-        nb_files=bucket_object_count,
-        total_size_bytes=bucket_size,
-        last_modified=last_modified,
         region=bucket_location,
-        cost=round(COST_PER_BYTE * bucket_size, 2),
+        creation_date=bucket.creation_date,
+        last_modified=last_modified,
+        nb_files=bucket_object_count,
+        total_size=bucket_size,
+        cost=(COST_PER_BYTE * bucket_size),
     )
 
 
@@ -62,8 +62,14 @@ def list_buckets(group_by: str = ""):
 
     all_buckets_info = {}
 
+    limit = 4
+
     for bucket in client.list_buckets()["Buckets"]:
         bucket_info = get_bucket(bucket["Name"])
+
+        limit -= 1
+        if limit == 0:
+            break
 
         # Ignore empty buckets
         if not bucket_info:
@@ -86,7 +92,7 @@ def list_buckets(group_by: str = ""):
 
         # Update the summary
         all_buckets_info[current_group]["total_cost"] += bucket_info["cost"]
-        all_buckets_info[current_group]["total_size"] += bucket_info["total_size_bytes"]
+        all_buckets_info[current_group]["total_size"] += bucket_info["total_size"]
         all_buckets_info[current_group]["files_count"] += bucket_info["nb_files"]
         all_buckets_info[current_group]["buckets_count"] += 1
 
